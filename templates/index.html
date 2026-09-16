@@ -5,90 +5,98 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Market Intelligence Agent</title>
   <style>
-    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; --accent:#5eead4; --panel:#0d1a2b; --line:#24364d; --muted:#9eb0c8; }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: #07111f; color: #e6edf7; }
-    main { width: min(760px, calc(100% - 32px)); margin: 0 auto; padding: 72px 0; }
-    .eyebrow { color: #5eead4; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-    h1 { margin: 12px 0; font-size: clamp(36px, 8vw, 64px); line-height: 1; letter-spacing: -.04em; }
-    .intro { max-width: 620px; color: #9eb0c8; font-size: 18px; line-height: 1.6; }
-    .card { margin-top: 36px; padding: 24px; border: 1px solid #24364d; border-radius: 18px; background: #0d1a2b; box-shadow: 0 20px 70px #0008; }
-    label { display: block; margin-bottom: 10px; font-weight: 700; }
-    .row { display: flex; gap: 10px; }
-    input { flex: 1; min-width: 0; padding: 14px 16px; border: 1px solid #344963; border-radius: 10px; background: #081321; color: white; font: inherit; }
-    input:focus { outline: 2px solid #2dd4bf; border-color: transparent; }
-    button { padding: 14px 20px; border: 0; border-radius: 10px; background: #2dd4bf; color: #06201d; font: inherit; font-weight: 800; cursor: pointer; }
-    button:disabled { cursor: wait; opacity: .65; }
-    .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .examples button { padding: 7px 10px; border: 1px solid #344963; background: transparent; color: #b9c7d9; font-size: 12px; }
-    #result { display: none; margin-top: 22px; padding: 18px; border-left: 3px solid #2dd4bf; background: #081321; border-radius: 6px; white-space: pre-wrap; line-height: 1.6; }
-    #meta { margin-bottom: 6px; color: #5eead4; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-    footer { margin-top: 24px; color: #71839a; font-size: 12px; }
-    @media (max-width: 560px) { .row { flex-direction: column; } }
+    body { margin:0; min-height:100vh; background:radial-gradient(circle at 20% 0,#102944 0,#07111f 42%); color:#e6edf7; }
+    main { width:min(1080px,calc(100% - 32px)); margin:auto; padding:48px 0 64px; }
+    header { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; }
+    header > div:first-child { min-width:0; flex:1; }
+    .eyebrow { color:var(--accent); font-size:12px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    h1 { margin:10px 0; font-size:clamp(34px,5vw,54px); line-height:1.05; letter-spacing:-.04em; }
+    .intro { max-width:650px; color:var(--muted); font-size:17px; line-height:1.6; }
+    .status { margin-top:4px; padding:8px 12px; border:1px solid #1d594f; border-radius:99px; color:var(--accent); font-size:12px; white-space:nowrap; }
+    .grid { display:grid; grid-template-columns:1.6fr .9fr; gap:18px; margin-top:28px; }
+    .card { padding:22px; border:1px solid var(--line); border-radius:18px; background:rgba(13,26,43,.94); box-shadow:0 18px 60px #0006; }
+    .card h2 { margin:0 0 16px; font-size:16px; }
+    label { display:block; margin-bottom:9px; font-weight:700; }
+    .row { display:flex; gap:10px; }
+    input { flex:1; min-width:0; padding:14px 16px; border:1px solid #344963; border-radius:10px; background:#081321; color:white; font:inherit; }
+    input:focus { outline:2px solid #2dd4bf; border-color:transparent; }
+    button { padding:13px 18px; border:0; border-radius:10px; background:#2dd4bf; color:#06201d; font:inherit; font-weight:800; cursor:pointer; }
+    button:disabled { cursor:wait; opacity:.65; }
+    .ghost { padding:7px 10px; border:1px solid #344963; background:transparent; color:#b9c7d9; font-size:12px; }
+    .examples,.watchlist { display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
+    #result { display:none; margin-top:18px; padding:16px; border-left:3px solid var(--accent); background:#081321; border-radius:6px; white-space:pre-wrap; line-height:1.6; }
+    #meta { margin-bottom:6px; color:var(--accent); font-size:12px; font-weight:800; text-transform:uppercase; }
+    .ticker-form { display:flex; gap:8px; }
+    .ticker-form input { width:110px; }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:18px; }
+    .metric { padding:16px; border:1px solid var(--line); border-radius:14px; background:#081321; }
+    .metric span { display:block; color:#71839a; font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .metric strong { display:block; margin-top:8px; font-size:21px; }
+    .positive { color:#5eead4; } .negative { color:#fb7185; }
+    .chart-wrap { margin-top:18px; padding:14px; border:1px solid var(--line); border-radius:14px; background:#081321; }
+    canvas { display:block; width:100%; height:260px; }
+    .chart-caption { display:flex; justify-content:space-between; color:#71839a; font-size:11px; }
+    footer { margin-top:22px; color:#71839a; font-size:12px; }
+    @media (max-width:760px) { .grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}header{display:block}.status{display:inline-block}.row{flex-direction:column} }
   </style>
 </head>
 <body>
-  <main>
-    <div class="eyebrow">Portfolio Project</div>
-    <h1>Market Intelligence Agent</h1>
-    <p class="intro">Ask concise stock-research questions about prices, trends, risk, comparisons, news, and sentiment.</p>
+<main>
+  <header>
+    <div><div class="eyebrow">Portfolio Project</div><h1>Market Intelligence Agent</h1><p class="intro">Natural-language stock research with live market data, explainable risk metrics, and a bilingual query router.</p></div>
+    <div class="status">● Live market data</div>
+  </header>
 
-    <section class="card">
-      <form id="question-form">
-        <label for="query">What would you like to analyze?</label>
-        <div class="row">
-          <input id="query" name="query" value="How is AAPL trading?" autocomplete="off" required>
-          <button id="submit" type="submit">Analyze</button>
-        </div>
-      </form>
-      <div class="examples" aria-label="Example questions">
-        <button type="button" data-query="How is AAPL trading?">AAPL price</button>
-        <button type="button" data-query="Compare AAPL vs MSFT risk">Compare risk</button>
-        <button type="button" data-query="Show me NVDA technical trend">NVDA trend</button>
-        <button type="button" data-query="What is TSLA sentiment?">TSLA sentiment</button>
+  <section class="grid">
+    <div class="card">
+      <h2>Ask the agent</h2>
+      <form id="question-form"><label for="query">English or 中文</label><div class="row"><input id="query" value="How is AAPL trading?" autocomplete="off" required><button id="submit">Analyze</button></div></form>
+      <div class="examples">
+        <button class="ghost" data-query="How is AAPL trading?">AAPL price</button>
+        <button class="ghost" data-query="Compare AAPL vs MSFT risk">Compare risk</button>
+        <button class="ghost" data-query="英伟达技术趋势">中文示例</button>
+        <button class="ghost" data-query="What is TSLA sentiment?">Sentiment</button>
       </div>
       <div id="result" role="status"><div id="meta"></div><div id="answer"></div></div>
-    </section>
-    <footer>Educational research only — not financial advice. News features require a Finnhub API key.</footer>
-  </main>
+    </div>
+    <aside class="card">
+      <h2>Watchlist</h2>
+      <form id="watch-form" class="ticker-form"><input id="watch-input" placeholder="Ticker" maxlength="5"><button>Add</button></form>
+      <div id="watchlist" class="watchlist"></div>
+      <p class="intro" style="font-size:13px">Select a ticker to refresh the dashboard. Saved in your browser.</p>
+    </aside>
+  </section>
 
-  <script>
-    const form = document.querySelector('#question-form');
-    const input = document.querySelector('#query');
-    const submit = document.querySelector('#submit');
-    const result = document.querySelector('#result');
-    const meta = document.querySelector('#meta');
-    const answer = document.querySelector('#answer');
+  <section class="card" style="margin-top:18px">
+    <div class="ticker-form"><input id="dashboard-ticker" value="AAPL" maxlength="5"><button id="load-dashboard">Load dashboard</button></div>
+    <div id="dashboard-error" class="negative" style="margin-top:12px"></div>
+    <div class="metrics">
+      <div class="metric"><span>Last price</span><strong id="m-price">—</strong></div>
+      <div class="metric"><span>Daily change</span><strong id="m-change">—</strong></div>
+      <div class="metric"><span>Annualized volatility</span><strong id="m-vol">—</strong></div>
+      <div class="metric"><span>Max drawdown</span><strong id="m-dd">—</strong></div>
+    </div>
+    <div class="chart-wrap"><canvas id="price-chart" width="900" height="260" aria-label="Six-month price chart"></canvas><div class="chart-caption"><span id="chart-start"></span><span>6-month closing price</span><span id="chart-end"></span></div></div>
+  </section>
+  <footer>Educational research only — not financial advice. News and sentiment require a Finnhub API key.</footer>
+</main>
+<script>
+  const $ = selector => document.querySelector(selector);
+  const queryForm=$('#question-form'), queryInput=$('#query'), submit=$('#submit'), result=$('#result'), meta=$('#meta'), answer=$('#answer');
+  document.querySelectorAll('[data-query]').forEach(b=>b.addEventListener('click',()=>{queryInput.value=b.dataset.query;queryInput.focus()}));
+  queryForm.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;submit.textContent='Analyzing…';result.style.display='block';meta.textContent='Working';answer.textContent='Fetching market data…';try{const r=await fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:queryInput.value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Analysis failed');meta.textContent=`${d.ticker} · ${d.intent}`;answer.textContent=d.answer;const first=d.ticker.split(',')[0];if(first)loadDashboard(first)}catch(err){meta.textContent='Unable to analyze';answer.textContent=err.message}finally{submit.disabled=false;submit.textContent='Analyze'}});
 
-    document.querySelectorAll('[data-query]').forEach(button => {
-      button.addEventListener('click', () => { input.value = button.dataset.query; input.focus(); });
-    });
+  const watchKey='market-agent-watchlist';
+  let watchlist=JSON.parse(localStorage.getItem(watchKey)||'["AAPL","MSFT","NVDA"]');
+  function renderWatchlist(){const box=$('#watchlist');box.textContent='';watchlist.forEach(t=>{const b=document.createElement('button');b.className='ghost';b.textContent=t;b.addEventListener('click',()=>loadDashboard(t));box.appendChild(b)})}
+  $('#watch-form').addEventListener('submit',e=>{e.preventDefault();const t=$('#watch-input').value.trim().toUpperCase();if(/^[A-Z]{1,5}$/.test(t)&&!watchlist.includes(t)){watchlist.push(t);localStorage.setItem(watchKey,JSON.stringify(watchlist));renderWatchlist()}$('#watch-input').value=''});
 
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      submit.disabled = true;
-      submit.textContent = 'Analyzing…';
-      result.style.display = 'block';
-      meta.textContent = 'Working';
-      answer.textContent = 'Fetching market data…';
-      try {
-        const response = await fetch('/analyze', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({query: input.value})
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Analysis failed');
-        meta.textContent = `${data.ticker} · ${data.intent}`;
-        answer.textContent = data.answer;
-      } catch (error) {
-        meta.textContent = 'Unable to analyze';
-        answer.textContent = error.message;
-      } finally {
-        submit.disabled = false;
-        submit.textContent = 'Analyze';
-      }
-    });
-  </script>
+  function drawChart(points){const canvas=$('#price-chart'),ctx=canvas.getContext('2d'),ratio=devicePixelRatio||1,w=canvas.clientWidth,h=260;canvas.width=w*ratio;canvas.height=h*ratio;ctx.scale(ratio,ratio);ctx.clearRect(0,0,w,h);if(!points.length)return;const values=points.map(p=>p.close),min=Math.min(...values),max=Math.max(...values),pad=24,span=max-min||1;ctx.strokeStyle='#20344c';ctx.lineWidth=1;for(let i=0;i<4;i++){const y=pad+(h-pad*2)*i/3;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke()}ctx.strokeStyle='#5eead4';ctx.lineWidth=2.5;ctx.beginPath();values.forEach((v,i)=>{const x=pad+(w-pad*2)*i/(values.length-1||1),y=h-pad-(v-min)/span*(h-pad*2);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke();$('#chart-start').textContent=points[0].date;$('#chart-end').textContent=points.at(-1).date}
+  async function loadDashboard(ticker){ticker=ticker.trim().toUpperCase();$('#dashboard-ticker').value=ticker;$('#dashboard-error').textContent='';try{const r=await fetch(`/api/dashboard/${ticker}`),d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load ticker');$('#m-price').textContent=`$${d.price.toFixed(2)}`;const change=$('#m-change');change.textContent=`${d.change_pct>=0?'+':''}${d.change_pct.toFixed(2)}%`;change.className=d.change_pct>=0?'positive':'negative';$('#m-vol').textContent=d.metrics.annualized_volatility==null?'—':`${(d.metrics.annualized_volatility*100).toFixed(1)}%`;$('#m-dd').textContent=d.metrics.max_drawdown==null?'—':`${(d.metrics.max_drawdown*100).toFixed(1)}%`;drawChart(d.history)}catch(err){$('#dashboard-error').textContent=err.message}}
+  $('#load-dashboard').addEventListener('click',()=>loadDashboard($('#dashboard-ticker').value));
+  renderWatchlist();loadDashboard('AAPL');window.addEventListener('resize',()=>loadDashboard($('#dashboard-ticker').value));
+</script>
 </body>
 </html>
