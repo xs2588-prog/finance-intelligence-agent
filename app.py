@@ -5,6 +5,8 @@ from flask import Flask, jsonify, render_template, request
 
 from finance_agent.analytics import technical_metrics
 from finance_agent.cli import build_agent
+from finance_agent.routing import extract_tickers
+from finance_agent.thesis import analyze_thesis
 
 
 app = Flask(__name__)
@@ -14,6 +16,11 @@ agent = build_agent()
 @app.get("/")
 def index():
     return render_template("index.html")
+
+
+@app.get("/thesis")
+def thesis_page():
+    return render_template("thesis.html")
 
 
 @app.get("/health")
@@ -59,6 +66,22 @@ def analyze():
     try:
         result = agent.ask(query)
         return jsonify({"ticker": result.ticker, "intent": result.intent, "answer": result.answer})
+    except (ValueError, KeyError, IndexError) as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.post("/api/thesis")
+def thesis_analysis():
+    payload = request.get_json(silent=True) or {}
+    statement = payload.get("thesis", "").strip()
+    explicit_ticker = payload.get("ticker", "").strip().upper()
+    if len(statement) < 12:
+        return jsonify({"error": "Write an investment thesis of at least 12 characters."}), 400
+    ticker = explicit_ticker or next(iter(extract_tickers(statement)), "")
+    if not re.fullmatch(r"[A-Z]{1,5}", ticker):
+        return jsonify({"error": "Include a valid ticker such as AAPL, MSFT, NVDA, or TSLA."}), 400
+    try:
+        return jsonify(analyze_thesis(statement, ticker, agent.market_data, agent.news))
     except (ValueError, KeyError, IndexError) as exc:
         return jsonify({"error": str(exc)}), 400
 
