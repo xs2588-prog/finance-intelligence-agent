@@ -1,6 +1,6 @@
 # Finance Intelligence Agent
 
-A portfolio-ready Python project that turns natural-language stock questions into concise, evidence-backed answers. It combines market prices, technical risk metrics, company news, and lightweight sentiment analysis behind one modular agent interface.
+A portfolio-ready Python project that challenges investment ideas instead of simply agreeing with them. It turns natural-language stock questions and investment theses into transparent bull cases, bear cases, risk metrics, and confidence-scored judgments.
 
 > Educational research tool only — not financial advice.
 
@@ -21,17 +21,24 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 - Responsive browser dashboard with a six-month price chart
 - Browser-persisted watchlist and natural-language query routing
 - Health-check and structured dashboard API endpoints
+- Investment Thesis Lab with Bull, Bear, and Judge roles
+- Source-labelled evidence cards, explicit unknowns, and confidence scoring
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-  B["Browser dashboard"] --> F["Flask API"]
+  B["Dashboard + Thesis Lab"] --> F["Flask API"]
   F --> R["Ticker + intent router"]
   R --> A["FinanceAgent"]
+  F --> T["Thesis Engine"]
   A --> Y["Yahoo Finance"]
   A --> N["Finnhub News"]
   A --> M["Risk + sentiment analytics"]
+  T --> Y
+  T --> N
+  T --> M
+  T --> J["Bull / Bear / Judge report"]
   A --> F
 ```
 
@@ -76,6 +83,8 @@ flask --app app run
 
 Then visit `http://127.0.0.1:5000`. The dashboard includes live price cards,
 annualized volatility, maximum drawdown, a six-month chart, and a local watchlist.
+Open `http://127.0.0.1:5000/thesis` to challenge an investment thesis with
+separate Bull and Bear evidence, a rule-based Judge verdict, and explicit blind spots.
 
 Additional API endpoints:
 
@@ -83,6 +92,7 @@ Additional API endpoints:
 GET /health
 GET /api/dashboard/AAPL
 POST /analyze
+POST /api/thesis
 ```
 
 ## Demo notebook
@@ -107,7 +117,12 @@ pytest
 
 - Yahoo Finance is convenient rather than exchange-grade real-time data.
 - The baseline sentiment model is intentionally simple and should not be treated as a trading signal.
-- Next steps: FinBERT adapter, cached data layer, richer evaluation set, Docker deployment, and a small web UI.
+- The first Thesis Lab release uses observable market behavior and optional news; valuation, filings, and analyst-estimate evidence remain explicit roadmap items.
+- Next steps: SEC filing retrieval, valuation scenarios, research memory, richer evaluation, and portfolio stress testing.
+
+## Resume summary
+
+> Built an explainable financial research agent that challenges natural-language investment theses through separate Bull and Bear evidence pipelines, transparent risk calculations, and a confidence-scored Judge workflow using live market and news data.
 
 ## Security note
 
