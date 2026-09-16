@@ -16,7 +16,7 @@ nb["metadata"]["kernelspec"] = {
 }
 nb["metadata"]["language_info"] = {"name": "python", "version": "3.10"}
 nb["cells"] = [
-    nbf.v4.new_markdown_cell("""# Market Intelligence Agent — Portfolio Demo
+    nbf.v4.new_markdown_cell("""# Finance Intelligence Agent — Portfolio Demo
 
 ## tl;dr
 
@@ -42,8 +42,8 @@ from datetime import datetime, timezone
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from market_agent import MarketAgent
-from market_agent.models import NewsItem, PriceSnapshot"""),
+from finance_agent import FinanceAgent
+from finance_agent.models import NewsItem, PriceSnapshot"""),
     nbf.v4.new_markdown_cell("## Data\n\nCreate deterministic providers with two different price paths and representative headlines."),
     nbf.v4.new_code_cell("""class DemoMarketData:
     def __init__(self):
@@ -68,7 +68,7 @@ class DemoNews:
         ]
 
 
-agent = MarketAgent(DemoMarketData(), DemoNews())"""),
+agent = FinanceAgent(DemoMarketData(), DemoNews())"""),
     nbf.v4.new_markdown_cell("## Results\n\n### 1. Route questions and return concise answers"),
     nbf.v4.new_code_cell("""questions = [
     "How is AAPL trading?",
