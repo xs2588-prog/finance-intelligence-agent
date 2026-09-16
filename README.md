@@ -24,19 +24,23 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 
 ## Architecture
 
-```text
-User question
-     |
-     v
-Ticker + intent router
-     |
-     +--> Yahoo Finance --> price / history --> risk metrics
-     |
-     +--> Finnhub -------> company news -----> sentiment
-     |
-     v
-Structured AnalysisResult
+```mermaid
+flowchart LR
+  B["Browser dashboard"] --> F["Flask API"]
+  F --> R["Ticker + intent router"]
+  R --> A["MarketAgent"]
+  A --> Y["Yahoo Finance"]
+  A --> N["Finnhub News"]
+  A --> M["Risk + sentiment analytics"]
+  A --> F
 ```
+
+The system separates the browser, HTTP layer, orchestration, analytics, and data
+providers. This makes the financial calculations testable without network calls
+and allows providers or models to be swapped without rewriting the interface.
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for request flows, component
+ownership, design decisions, and the deployment topology.
 
 ## Quick start
 
