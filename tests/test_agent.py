@@ -25,6 +25,8 @@ class MarketAgentTests(unittest.TestCase):
     def test_routing_and_aliases(self):
         self.assertEqual(extract_tickers("Compare Apple vs MSFT risk"), ["AAPL", "MSFT"])
         self.assertEqual(detect_intent("latest NVDA headlines"), "news")
+        self.assertEqual(extract_tickers("比较苹果和微软的风险"), ["AAPL", "MSFT"])
+        self.assertEqual(detect_intent("比较苹果和微软的风险"), "compare")
 
     def test_price_answer(self):
         result = MarketAgent(FakeMarketData()).ask("AAPL price")
