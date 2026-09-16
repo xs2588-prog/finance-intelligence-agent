@@ -3,8 +3,8 @@ import re
 
 from flask import Flask, jsonify, render_template, request
 
-from market_agent.analytics import technical_metrics
-from market_agent.cli import build_agent
+from finance_agent.analytics import technical_metrics
+from finance_agent.cli import build_agent
 
 
 app = Flask(__name__)
