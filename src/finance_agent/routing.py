@@ -11,12 +11,6 @@ ALIASES = {
     "AMAZON": "AMZN",
     "GOOGLE": "GOOGL",
     "META": "META",
-    "苹果": "AAPL",
-    "微软": "MSFT",
-    "英伟达": "NVDA",
-    "特斯拉": "TSLA",
-    "亚马逊": "AMZN",
-    "谷歌": "GOOGL",
 }
 
 STOPWORDS = {
@@ -38,14 +32,14 @@ def extract_tickers(query: str) -> list[str]:
 
 def detect_intent(query: str) -> str:
     q = query.lower()
-    if any(word in q for word in ("compare", " versus ", " vs ", "比较", "对比")):
+    if any(word in q for word in ("compare", " versus ", " vs ")):
         return "compare"
-    if any(word in q for word in ("news", "headline", "catalyst", "happened", "新闻", "消息", "催化剂")):
+    if any(word in q for word in ("news", "headline", "catalyst", "happened")):
         return "news"
-    if any(word in q for word in ("sentiment", "mood", "positive", "negative", "情绪", "正面", "负面")):
+    if any(word in q for word in ("sentiment", "mood", "positive", "negative")):
         return "sentiment"
-    if any(word in q for word in ("risk", "volatility", "drawdown", "风险", "波动", "回撤")):
+    if any(word in q for word in ("risk", "volatility", "drawdown")):
         return "risk"
-    if any(word in q for word in ("technical", "rsi", "moving average", "trend", "技术", "均线", "趋势")):
+    if any(word in q for word in ("technical", "rsi", "moving average", "trend")):
         return "technical"
     return "price"
