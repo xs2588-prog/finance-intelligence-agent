@@ -11,7 +11,7 @@ class WebAppTests(unittest.TestCase):
     def test_homepage_loads(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Market Intelligence Agent", response.data)
+        self.assertIn(b"Finance Intelligence Agent", response.data)
 
     def test_analyze_requires_query(self):
         response = self.client.post("/analyze", json={})
