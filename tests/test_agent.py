@@ -6,6 +6,7 @@ import pandas as pd
 from finance_agent import FinanceAgent
 from finance_agent.models import NewsItem, PriceSnapshot
 from finance_agent.routing import detect_intent, extract_tickers
+from finance_agent.thesis import analyze_thesis
 
 
 class FakeMarketData:
@@ -34,6 +35,16 @@ class FinanceAgentTests(unittest.TestCase):
     def test_sentiment_answer(self):
         result = FinanceAgent(FakeMarketData(), FakeNews()).ask("AAPL sentiment")
         self.assertIn("positive", result.answer)
+
+    def test_thesis_analysis_builds_both_sides(self):
+        report = analyze_thesis(
+            "Apple can sustain long-term growth.", "AAPL", FakeMarketData(), FakeNews()
+        )
+        self.assertEqual(report["ticker"], "AAPL")
+        self.assertIn(report["verdict"], {"supported", "mixed", "challenged"})
+        self.assertGreater(len(report["bull_case"]), 0)
+        self.assertGreater(len(report["bear_case"]), 0)
+        self.assertLessEqual(report["confidence"], 85)
 
 
 if __name__ == "__main__":
