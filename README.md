@@ -1,4 +1,4 @@
-# Market Intelligence Agent
+# Finance Intelligence Agent
 
 A portfolio-ready Python project that turns natural-language stock questions into concise, evidence-backed answers. It combines market prices, technical risk metrics, company news, and lightweight sentiment analysis behind one modular agent interface.
 
@@ -28,7 +28,7 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 flowchart LR
   B["Browser dashboard"] --> F["Flask API"]
   F --> R["Ticker + intent router"]
-  R --> A["MarketAgent"]
+  R --> A["FinanceAgent"]
   A --> Y["Yahoo Finance"]
   A --> N["Finnhub News"]
   A --> M["Risk + sentiment analytics"]
@@ -54,9 +54,9 @@ cp .env.example .env
 Add your own Finnhub key to `.env` only if you want news features. Price and technical analysis do not require it.
 
 ```bash
-market-agent "How is AAPL trading?"
-market-agent "Compare AAPL vs MSFT risk"
-market-agent "Latest NVDA news"
+finance-agent "How is AAPL trading?"
+finance-agent "Compare AAPL vs MSFT risk"
+finance-agent "Latest NVDA news"
 ```
 
 Run the API:
