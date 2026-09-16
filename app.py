@@ -1,10 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 
 from market_agent.cli import build_agent
 
 
 app = Flask(__name__)
 agent = build_agent()
+
+
+@app.get("/")
+def index():
+    return render_template("index.html")
 
 
 @app.post("/analyze")
@@ -21,4 +26,3 @@ def analyze():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
