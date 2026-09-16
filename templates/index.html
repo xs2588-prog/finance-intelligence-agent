@@ -45,18 +45,18 @@
 <body>
 <main>
   <header>
-    <div><div class="eyebrow">Portfolio Project</div><h1>Finance Intelligence Agent</h1><p class="intro">Natural-language stock research with live market data, explainable risk metrics, and a bilingual query router.</p></div>
+    <div><div class="eyebrow">Portfolio Project</div><h1>Finance Intelligence Agent</h1><p class="intro">Natural-language stock research with live market data, explainable risk metrics, and an intent-aware query router.</p></div>
     <div class="status">● Live market data</div>
   </header>
 
   <section class="grid">
     <div class="card">
       <h2>Ask the agent</h2>
-      <form id="question-form"><label for="query">English or 中文</label><div class="row"><input id="query" value="How is AAPL trading?" autocomplete="off" required><button id="submit">Analyze</button></div></form>
+      <form id="question-form"><label for="query">Ask a finance question</label><div class="row"><input id="query" value="How is AAPL trading?" autocomplete="off" required><button id="submit">Analyze</button></div></form>
       <div class="examples">
         <button class="ghost" data-query="How is AAPL trading?">AAPL price</button>
         <button class="ghost" data-query="Compare AAPL vs MSFT risk">Compare risk</button>
-        <button class="ghost" data-query="英伟达技术趋势">中文示例</button>
+        <button class="ghost" data-query="Show me NVDA technical trend">NVDA trend</button>
         <button class="ghost" data-query="What is TSLA sentiment?">Sentiment</button>
       </div>
       <div id="result" role="status"><div id="meta"></div><div id="answer"></div></div>
