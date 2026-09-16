@@ -9,7 +9,7 @@ analytics, and third-party data access can evolve independently.
 flowchart LR
     U["Browser user"] -->|"question or ticker"| W["Flask web layer"]
     W --> R["Ticker and intent router"]
-    R --> A["MarketAgent orchestrator"]
+    R --> A["FinanceAgent orchestrator"]
     A --> Y["Yahoo Finance provider"]
     A --> F["Finnhub news provider"]
     A --> M["Analytics layer"]
@@ -52,17 +52,16 @@ GET /api/dashboard/<ticker>
 | Layer | Files | Responsibility |
 |---|---|---|
 | Web/API | `app.py`, `templates/index.html` | HTTP validation, JSON responses, dashboard UI |
-| Orchestration | `src/market_agent/agent.py` | Chooses and combines analysis workflows |
-| Routing | `src/market_agent/routing.py` | English/Chinese aliases, ticker extraction, intent rules |
-| Analytics | `src/market_agent/analytics.py` | Deterministic risk and sentiment calculations |
-| Providers | `src/market_agent/providers.py` | Isolates Yahoo Finance and Finnhub integrations |
-| Contracts | `src/market_agent/models.py` | Typed inputs and result objects |
-| Delivery | `api/index.py`, `vercel.json` | Vercel serverless entry point and routing |
+| Orchestration | `src/finance_agent/agent.py` | Chooses and combines analysis workflows |
+| Routing | `src/finance_agent/routing.py` | English/Chinese aliases, ticker extraction, intent rules |
+| Analytics | `src/finance_agent/analytics.py` | Deterministic risk and sentiment calculations |
+| Providers | `src/finance_agent/providers.py` | Isolates Yahoo Finance and Finnhub integrations |
+| Contracts | `src/finance_agent/models.py` | Typed inputs and result objects |
 | Verification | `tests/` | Offline provider, routing, API, and UI smoke tests |
 
 ## Design decisions
 
-1. **Dependency injection:** `MarketAgent` accepts market-data and news providers.
+1. **Dependency injection:** `FinanceAgent` accepts market-data and news providers.
    Tests therefore run without network access, and providers can be replaced later.
 2. **Deterministic analytics:** financial metrics are ordinary Python calculations;
    an LLM is not allowed to invent prices, volatility, or drawdown values.
@@ -73,18 +72,9 @@ GET /api/dashboard/<ticker>
 5. **Client-side watchlist:** watchlist state stays in `localStorage`; the server
    stores no personal portfolio information.
 
-## Deployment topology
+## Runtime topology
 
-```mermaid
-flowchart TB
-    G["GitHub repository"] --> V["Vercel build"]
-    V --> S["Python serverless function"]
-    S --> T["Flask application and Jinja template"]
-    S --> Y["Yahoo Finance"]
-    S -. "optional API key" .-> F["Finnhub"]
-```
-
-The hosted application is stateless. Each request fetches the data it needs; a
-future production iteration could add caching, rate limiting, observability, and
-a durable user-account/watchlist service.
-
+The current project runs locally as a stateless Flask application. Each request
+fetches the data it needs from the selected provider. A future hosted version
+could add caching, rate limiting, observability, and a durable user-account or
+watchlist service without changing the analysis layer.
