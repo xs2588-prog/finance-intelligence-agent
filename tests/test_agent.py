@@ -3,9 +3,9 @@ import unittest
 
 import pandas as pd
 
-from market_agent import MarketAgent
-from market_agent.models import NewsItem, PriceSnapshot
-from market_agent.routing import detect_intent, extract_tickers
+from finance_agent import FinanceAgent
+from finance_agent.models import NewsItem, PriceSnapshot
+from finance_agent.routing import detect_intent, extract_tickers
 
 
 class FakeMarketData:
@@ -21,7 +21,7 @@ class FakeNews:
         return [NewsItem(f"{ticker} reports strong growth and record profit")]
 
 
-class MarketAgentTests(unittest.TestCase):
+class FinanceAgentTests(unittest.TestCase):
     def test_routing_and_aliases(self):
         self.assertEqual(extract_tickers("Compare Apple vs MSFT risk"), ["AAPL", "MSFT"])
         self.assertEqual(detect_intent("latest NVDA headlines"), "news")
@@ -29,12 +29,12 @@ class MarketAgentTests(unittest.TestCase):
         self.assertEqual(detect_intent("比较苹果和微软的风险"), "compare")
 
     def test_price_answer(self):
-        result = MarketAgent(FakeMarketData()).ask("AAPL price")
+        result = FinanceAgent(FakeMarketData()).ask("AAPL price")
         self.assertEqual(result.intent, "price")
         self.assertIn("+5.00%", result.answer)
 
     def test_sentiment_answer(self):
-        result = MarketAgent(FakeMarketData(), FakeNews()).ask("AAPL sentiment")
+        result = FinanceAgent(FakeMarketData(), FakeNews()).ask("AAPL sentiment")
         self.assertIn("positive", result.answer)
 
 
