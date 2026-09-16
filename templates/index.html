@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Market Intelligence Agent</title>
+  <title>Finance Intelligence Agent</title>
   <style>
     :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; --accent:#5eead4; --panel:#0d1a2b; --line:#24364d; --muted:#9eb0c8; }
     * { box-sizing: border-box; }
@@ -45,7 +45,7 @@
 <body>
 <main>
   <header>
-    <div><div class="eyebrow">Portfolio Project</div><h1>Market Intelligence Agent</h1><p class="intro">Natural-language stock research with live market data, explainable risk metrics, and a bilingual query router.</p></div>
+    <div><div class="eyebrow">Portfolio Project</div><h1>Finance Intelligence Agent</h1><p class="intro">Natural-language stock research with live market data, explainable risk metrics, and a bilingual query router.</p></div>
     <div class="status">● Live market data</div>
   </header>
 
@@ -88,7 +88,7 @@
   document.querySelectorAll('[data-query]').forEach(b=>b.addEventListener('click',()=>{queryInput.value=b.dataset.query;queryInput.focus()}));
   queryForm.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;submit.textContent='Analyzing…';result.style.display='block';meta.textContent='Working';answer.textContent='Fetching market data…';try{const r=await fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:queryInput.value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Analysis failed');meta.textContent=`${d.ticker} · ${d.intent}`;answer.textContent=d.answer;const first=d.ticker.split(',')[0];if(first)loadDashboard(first)}catch(err){meta.textContent='Unable to analyze';answer.textContent=err.message}finally{submit.disabled=false;submit.textContent='Analyze'}});
 
-  const watchKey='market-agent-watchlist';
+  const watchKey='finance-agent-watchlist';
   let watchlist=JSON.parse(localStorage.getItem(watchKey)||'["AAPL","MSFT","NVDA"]');
   function renderWatchlist(){const box=$('#watchlist');box.textContent='';watchlist.forEach(t=>{const b=document.createElement('button');b.className='ghost';b.textContent=t;b.addEventListener('click',()=>loadDashboard(t));box.appendChild(b)})}
   $('#watch-form').addEventListener('submit',e=>{e.preventDefault();const t=$('#watch-input').value.trim().toUpperCase();if(/^[A-Z]{1,5}$/.test(t)&&!watchlist.includes(t)){watchlist.push(t);localStorage.setItem(watchKey,JSON.stringify(watchlist));renderWatchlist()}$('#watch-input').value=''});
