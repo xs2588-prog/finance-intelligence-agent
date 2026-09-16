@@ -18,6 +18,9 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 - Explainable lexicon sentiment baseline
 - Swappable data providers for testing and future model integrations
 - CLI and Flask API entry points
+- Responsive browser dashboard with a six-month price chart
+- Browser-persisted watchlist and bilingual English/Chinese queries
+- Health-check and structured dashboard API endpoints
 
 ## Architecture
 
@@ -61,6 +64,31 @@ curl -X POST http://127.0.0.1:5000/analyze \
   -d '{"query":"Compare AAPL vs MSFT risk"}'
 ```
 
+Open the interactive dashboard:
+
+```bash
+flask --app app run
+```
+
+Then visit `http://127.0.0.1:5000`. The dashboard includes live price cards,
+annualized volatility, maximum drawdown, a six-month chart, and a local watchlist.
+
+Chinese queries are supported for common intents and company aliases, for example:
+
+```text
+英伟达技术趋势
+比较苹果和微软的风险
+特斯拉最近有什么新闻
+```
+
+Additional API endpoints:
+
+```text
+GET /health
+GET /api/dashboard/AAPL
+POST /analyze
+```
+
 ## Demo notebook
 
 [`notebooks/portfolio_demo.ipynb`](notebooks/portfolio_demo.ipynb) is an offline, deterministic walkthrough. It uses dependency injection and fake providers, so reviewers can inspect the routing, analytics, and visual output without API keys or network access.
@@ -88,4 +116,3 @@ pytest
 ## Security note
 
 The source notebook contained embedded third-party credentials. They were removed from this repository. Any credentials previously exposed in a notebook should be revoked and replaced before further use.
-
