@@ -53,7 +53,7 @@ GET /api/dashboard/<ticker>
 |---|---|---|
 | Web/API | `app.py`, `templates/index.html` | HTTP validation, JSON responses, dashboard UI |
 | Orchestration | `src/finance_agent/agent.py` | Chooses and combines analysis workflows |
-| Routing | `src/finance_agent/routing.py` | English/Chinese aliases, ticker extraction, intent rules |
+| Routing | `src/finance_agent/routing.py` | Company aliases, ticker extraction, and intent rules |
 | Analytics | `src/finance_agent/analytics.py` | Deterministic risk and sentiment calculations |
 | Providers | `src/finance_agent/providers.py` | Isolates Yahoo Finance and Finnhub integrations |
 | Contracts | `src/finance_agent/models.py` | Typed inputs and result objects |
