@@ -10,12 +10,17 @@ flowchart LR
     U["Browser user"] -->|"question or ticker"| W["Flask web layer"]
     W --> R["Ticker and intent router"]
     R --> A["FinanceAgent orchestrator"]
+    W --> T["Thesis engine"]
     A --> Y["Yahoo Finance provider"]
     A --> F["Finnhub news provider"]
     A --> M["Analytics layer"]
     Y -->|"price and OHLC history"| A
     F -->|"company news"| A
     M -->|"volatility, drawdown, trend, sentiment"| A
+    T --> Y
+    T --> F
+    T --> M
+    T -->|"bull case, bear case, judge verdict"| W
     A -->|"AnalysisResult"| W
     W -->|"JSON"| U
     U -->|"localStorage"| L["Browser watchlist"]
@@ -47,6 +52,21 @@ GET /api/dashboard/<ticker>
   -> render metric cards and canvas chart in the browser
 ```
 
+### Investment thesis challenge
+
+```text
+POST /api/thesis
+  -> validate thesis and ticker
+  -> collect current price and six-month history
+  -> construct Bull and Bear evidence from momentum, trend, risk, and optional news
+  -> score the evidence with a bounded, deterministic Judge
+  -> return source labels, dates, confidence, methodology, and unknowns
+```
+
+The Judge does not invent financial facts or hide uncertainty behind prose. Its
+confidence is capped, its evidence scores are inspectable, and missing news,
+valuation, or fundamental evidence is shown to the user as an explicit blind spot.
+
 ## Layers and ownership
 
 | Layer | Files | Responsibility |
@@ -55,6 +75,7 @@ GET /api/dashboard/<ticker>
 | Orchestration | `src/finance_agent/agent.py` | Chooses and combines analysis workflows |
 | Routing | `src/finance_agent/routing.py` | Company aliases, ticker extraction, and intent rules |
 | Analytics | `src/finance_agent/analytics.py` | Deterministic risk and sentiment calculations |
+| Thesis engine | `src/finance_agent/thesis.py` | Builds opposing evidence cases and a transparent verdict |
 | Providers | `src/finance_agent/providers.py` | Isolates Yahoo Finance and Finnhub integrations |
 | Contracts | `src/finance_agent/models.py` | Typed inputs and result objects |
 | Verification | `tests/` | Offline provider, routing, API, and UI smoke tests |
@@ -71,6 +92,8 @@ GET /api/dashboard/<ticker>
    structured dashboard JSON supports charts and future clients.
 5. **Client-side watchlist:** watchlist state stays in `localStorage`; the server
    stores no personal portfolio information.
+6. **Adversarial research:** the thesis workflow always constructs opposing cases
+   and reports missing evidence instead of optimizing for agreement with the user.
 
 ## Runtime topology
 
