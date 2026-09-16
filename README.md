@@ -19,7 +19,7 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 - Swappable data providers for testing and future model integrations
 - CLI and Flask API entry points
 - Responsive browser dashboard with a six-month price chart
-- Browser-persisted watchlist and bilingual English/Chinese queries
+- Browser-persisted watchlist and natural-language query routing
 - Health-check and structured dashboard API endpoints
 
 ## Architecture
@@ -76,14 +76,6 @@ flask --app app run
 
 Then visit `http://127.0.0.1:5000`. The dashboard includes live price cards,
 annualized volatility, maximum drawdown, a six-month chart, and a local watchlist.
-
-Chinese queries are supported for common intents and company aliases, for example:
-
-```text
-英伟达技术趋势
-比较苹果和微软的风险
-特斯拉最近有什么新闻
-```
 
 Additional API endpoints:
 
