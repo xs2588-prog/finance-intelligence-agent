@@ -1,0 +1,10 @@
+{
+  "dataset": "evaluation/routing_cases.json",
+  "case_count": 30,
+  "metrics": {
+    "intent_accuracy": 1.0,
+    "ticker_exact_match": 1.0,
+    "joint_exact_match": 1.0
+  },
+  "failures": []
+}

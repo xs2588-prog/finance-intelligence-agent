@@ -23,6 +23,8 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 - Health-check and structured dashboard API endpoints
 - Investment Thesis Lab with Bull, Bear, and Judge roles
 - Source-labelled evidence cards, explicit unknowns, and confidence scoring
+- Reproducible 30-case routing evaluation with intent and ticker metrics
+- Optional constrained LoRA intent adapter and documented FinBERT research path
 
 ## Architecture
 
@@ -30,6 +32,7 @@ The original prototype was developed in Google Colab as an 86-cell notebook. Thi
 flowchart LR
   B["Dashboard + Thesis Lab"] --> F["Flask API"]
   F --> R["Ticker + intent router"]
+  R -. optional .-> L["LoRA intent adapter"]
   R --> A["FinanceAgent"]
   F --> T["Thesis Engine"]
   A --> Y["Yahoo Finance"]
@@ -104,14 +107,19 @@ POST /api/thesis
 ```bash
 pip install -r requirements-dev.txt
 pytest
+python scripts/evaluate_routing.py
 ```
+
+The curated evaluation reports intent accuracy, ticker exact match, and joint
+exact match. See [docs/LLM_RESEARCH.md](docs/LLM_RESEARCH.md) for the LoRA/PEFT
+inference contract, FinBERT boundary, and model-evaluation policy.
 
 ## Design decisions
 
 - **Credentials stay outside source control.** Secrets load from environment variables and `.env` is ignored.
 - **Providers are injectable.** Tests and demos do not depend on live APIs.
 - **Metrics remain inspectable.** The agent returns both readable text and structured evidence.
-- **LLMs are optional.** A deterministic baseline keeps the repository lightweight and reproducible; FinBERT or a fine-tuned model can be added behind the sentiment interface.
+- **LLMs are optional and bounded.** The default router is lightweight and reproducible; the research path constrains LoRA output to an allowlist and keeps FinBERT labels separate from generated explanations.
 
 ## Limitations and roadmap
 

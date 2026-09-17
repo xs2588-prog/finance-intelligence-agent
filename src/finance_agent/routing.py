@@ -15,14 +15,19 @@ ALIASES = {
 
 STOPWORDS = {
     "A", "AI", "AND", "ARE", "FOR", "HOW", "IS", "NEWS", "PRICE",
-    "STOCK", "THE", "TODAY", "WHAT", "WHY",
+    "RSI", "STOCK", "THE", "TODAY", "WHAT", "WHY",
 }
 
 
 def extract_tickers(query: str) -> list[str]:
     upper = query.upper()
-    found = [ticker for company, ticker in ALIASES.items() if company in upper]
-    tokens = re.findall(r"\$?[A-Za-z]{1,5}", query)
+    matched_companies = [company for company in ALIASES if company in upper]
+    matched_companies.sort(key=upper.index)
+    found = [ALIASES[company] for company in matched_companies]
+    scrubbed = query
+    for company in matched_companies:
+        scrubbed = re.sub(re.escape(company), " ", scrubbed, flags=re.IGNORECASE)
+    tokens = re.findall(r"\$?[A-Za-z]{1,5}\b", scrubbed)
     candidates = [token.lstrip("$") for token in tokens if token.startswith("$") or token.isupper()]
     for candidate in candidates:
         if candidate not in STOPWORDS and candidate not in found:

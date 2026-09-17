@@ -9,6 +9,7 @@ analytics, and third-party data access can evolve independently.
 flowchart LR
     U["Browser user"] -->|"question or ticker"| W["Flask web layer"]
     W --> R["Ticker and intent router"]
+    R -.->|"optional constrained classification"| L["LoRA adapter"]
     R --> A["FinanceAgent orchestrator"]
     W --> T["Thesis engine"]
     A --> Y["Yahoo Finance provider"]
@@ -74,6 +75,7 @@ valuation, or fundamental evidence is shown to the user as an explicit blind spo
 | Web/API | `app.py`, `templates/index.html` | HTTP validation, JSON responses, dashboard UI |
 | Orchestration | `src/finance_agent/agent.py` | Chooses and combines analysis workflows |
 | Routing | `src/finance_agent/routing.py` | Company aliases, ticker extraction, and intent rules |
+| Optional LLM | `src/finance_agent/lora_intent.py` | Bounded LoRA intent inference, label validation, and safe fallback |
 | Analytics | `src/finance_agent/analytics.py` | Deterministic risk and sentiment calculations |
 | Thesis engine | `src/finance_agent/thesis.py` | Builds opposing evidence cases and a transparent verdict |
 | Providers | `src/finance_agent/providers.py` | Isolates Yahoo Finance and Finnhub integrations |
@@ -94,6 +96,16 @@ valuation, or fundamental evidence is shown to the user as an explicit blind spo
    stores no personal portfolio information.
 6. **Adversarial research:** the thesis workflow always constructs opposing cases
    and reports missing evidence instead of optimizing for agreement with the user.
+7. **Model boundary:** LoRA may classify intent and FinBERT may classify article
+   sentiment, but deterministic code remains authoritative for prices and risk.
+
+## Evaluation and failure containment
+
+The public baseline is measured on a versioned 30-query set covering six intents,
+company aliases, explicit ticker symbols, and two-ticker comparisons. The scorer
+reports intent accuracy, ticker exact match, and joint exact match. Generated
+labels are allowlisted; malformed LoRA output falls back to `analysis` rather
+than entering an unintended workflow.
 
 ## Runtime topology
 
